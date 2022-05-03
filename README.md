@@ -6,5 +6,6 @@ This project uses React library
 ```bash
 git clone https://github.com/AmitHalpert/path-simulator.git
 cd path-simulator
+yarn install
 yarn start
 ```
