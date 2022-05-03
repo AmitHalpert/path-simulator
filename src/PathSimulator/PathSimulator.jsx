@@ -116,7 +116,7 @@ export default class PathSimulator extends Component {
     this.forceUpdate()
   }
 
-    // refresh the page
+    // best workaround
     resetMatrix(){
       window.location.reload(false);
     }
