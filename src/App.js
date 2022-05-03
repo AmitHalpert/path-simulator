@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import ShortestPathSimulator from './ShortestPathSimulator/ShortestPathSimulator';
+import PathSimulator from './PathSimulator/PathSimulator';
 
 function App() {
   return (
     <div className="App">
-      <ShortestPathSimulator></ShortestPathSimulator>
+      <PathSimulator></PathSimulator>
     </div>
   );
 }
