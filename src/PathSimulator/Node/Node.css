@@ -1,18 +1,18 @@
 .node {
   width: 31px;
   height: 31px;
-  outline: 0.5px solid #ffffff36;
-  margin: 0.5px ;
+  background-color: #a1a6a3;
+  margin: 1px ;
   display: inline-block;
   vertical-align:middle;
 }
 
 .node-finish {
-  background-color: #e01d1dc4;
+  background-color: black;
 }
 
 .node-start {
-  background-color: rgb(14, 143, 68);
+  background-color: black;
   
 }
 
@@ -39,6 +39,7 @@
   }
 
   75% {
+
     transform: scale(1.2);
     background-color: rgba(0, 217, 159, 0.75);
   }
@@ -52,7 +53,6 @@
 .node-wall {
   background-color: #fcba03;
 }
-
 
 
 .node-shortest-path {

@@ -5,16 +5,15 @@ import {bfs, getShortestPathBFS} from '../algorithms/bfs';
 import {dfs, getShortestPathDFS} from '../algorithms/dfs';
 import './PathSimulator.css';
 
-var IsStartSelected = false;
-var isFinishSelected = false;
+
 
 const NUMBER_ROW = 26;
 const NUMBER_COL = 50;
 
-var START_NODE_ROW = 10;
-var START_NODE_COL = 15;
-var FINISH_NODE_ROW = 10;
-var FINISH_NODE_COL = 35;
+const START_NODE_ROW = 10;
+const START_NODE_COL = 15;
+const FINISH_NODE_ROW = 10;
+const FINISH_NODE_COL = 35;
 
 export default class PathSimulator extends Component {
   constructor() {
@@ -22,11 +21,16 @@ export default class PathSimulator extends Component {
     this.state = {
       matrix: [],
       mouseIsPressed: false,
+      mainIsPressed: "",
+      isVisualizing: false,
+      startNode_Pos: [START_NODE_ROW, START_NODE_COL],
+      finishNode_Pos: [FINISH_NODE_ROW, FINISH_NODE_COL],
     };
   }
 
   componentDidMount() {
-    const matrix = getInitialMatrix();
+    const { startNode_Pos, finishNode_Pos } = this.state;
+    let matrix = getInitialMatrix(startNode_Pos ,finishNode_Pos);
     this.setState({matrix});
   }
   
@@ -36,49 +40,71 @@ export default class PathSimulator extends Component {
 
   // user clicking a node
   handleMouseDown(row, col) {
-    if(row === START_NODE_ROW && col === START_NODE_COL){
-      IsStartSelected = true;
+    const {matrix, mainIsPressed} = this.state
+    const node = matrix[row][col];
+
+    if(node.isStart === true && node.isFinish === false){
+      this.setState({mainIsPressed: "start"});
+      node.isStart = false;
     }
-    else if(row === FINISH_NODE_ROW && col === FINISH_NODE_COL){
-      isFinishSelected = true;
+    if(node.isFinish === true && node.isStart === false){
+      this.setState({ mainIsPressed: "finish" });
+      node.isFinish = false;
     }
-    const newMatrix = getNewMatrixWithWallToggled(this.state.matrix, row, col);
-    this.setState({matrix: newMatrix, mouseIsPressed: true});
-  
+    if (mainIsPressed === "") {
+      const newMatrix = MatrixWithWallToggled(matrix, row, col);
+      this.setState({ matrix: newMatrix, mouseIsPressed: true });
+    }
+
   }
 
   // user hovering over a node
   handleMouseEnter(row, col) {
-    var newMatrix;
-    if (!this.state.mouseIsPressed) return;
-    // move start node
-    if(IsStartSelected){
-      START_NODE_COL = col;
-      START_NODE_ROW = row;
-      this.clearStart(row, col);
-      newMatrix = MoveStart(this.state.matrix, row, col);
-      this.setState({matrix: newMatrix});
+    const { matrix, mouseIsPressed, mainIsPressed } = this.state;
+
+    if (mainIsPressed === "start") {
+      const newMatrix = MatrixDynamicNodes(matrix, row, col, "start");
+      this.setState({ matrix: newMatrix})
     }
-    // move start finish
-    if(isFinishSelected){
-      FINISH_NODE_ROW = row;
-      FINISH_NODE_COL = col;
-      this.clearFinish(row, col);
-      newMatrix = MoveFinish(this.state.matrix, row, col);
-      this.setState({matrix: newMatrix});
+
+  
+    if(mainIsPressed === "finish") {
+      const newGrid = MatrixDynamicNodes(matrix, row, col, "finish");
+      this.setState({ grid: newGrid });
     }
-    // put walls
-    else{
-      newMatrix = getNewMatrixWithWallToggled(this.state.matrix, row, col);
-      this.setState({matrix: newMatrix});
+
+   if (mouseIsPressed && mainIsPressed === "") {
+      const newMatrix = MatrixWithWallToggled(matrix, row, col);
+      this.setState({ matrix: newMatrix, mouseIsPressed: true });
     }
   }
   
-  handleMouseUp() {
-    IsStartSelected = false;
-    isFinishSelected = false;
-    this.setState({mouseIsPressed: false});
-  }
+
+  // user not clicking
+  handleMouseLeave(row, col) {
+    const { matrix, mainIsPressed } = this.state;
+    if (mainIsPressed === "")
+        return;
+    let newMatrix = matrix.slice();
+    const node = newMatrix[row][col];
+    if (mainIsPressed === "start") {
+        const newNode = {
+            ...node,
+            isStart: false,
+            isWall: false
+        }
+        newMatrix[row][col] = newNode;
+    }
+    if (mainIsPressed === "finish") {
+        const newNode = {
+            ...node,
+            isFinish: false,
+            isWall: false
+        }
+        newMatrix[row][col] = newNode;
+    }
+    this.setState({ matrix: newMatrix });
+}
 
 
   /////////////////
@@ -255,7 +281,7 @@ export default class PathSimulator extends Component {
                       mouseIsPressed={mouseIsPressed}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                       onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
-                      onMouseUp={() => this.handleMouseUp()}
+                      onMouseUp={() => this.handleMouseUp(row, col)}
                       ></Node>
                   );
                 })}
@@ -273,12 +299,12 @@ export default class PathSimulator extends Component {
 // matrix 
 /////////////////
 
-const getInitialMatrix = () => {
-  const matrix = [];
+const getInitialMatrix = (startNode_Pos, finishNode_Pos) => {
+  let matrix = [];
   for (let row = 0; row < NUMBER_ROW; row++) {
     const currentRow = [];
     for (let col = 0; col < NUMBER_COL; col++) {
-      currentRow.push(createNode(col, row));
+      currentRow.push(createNode(col,row,startNode_Pos, finishNode_Pos));
     }
     matrix.push(currentRow);
   }
@@ -286,12 +312,18 @@ const getInitialMatrix = () => {
 };
 
 
-const createNode = (col, row) => {
+const createNode = (col, row, startNode, finishNode) => {
+
+  let start_x = startNode[0];
+  let start_y = startNode[1];
+  let finish_x = finishNode[0];
+  let finish_y = finishNode[1];
+
   return {
     col,
     row,
-    isStart: (row === START_NODE_ROW && col === START_NODE_COL),
-    isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
+    isStart: (row === start_x && col === start_y),
+    isFinish: (row === finish_x && col === finish_y),
     distance: Infinity,
     isVisited: false,
     isWall: false,
@@ -300,37 +332,39 @@ const createNode = (col, row) => {
 };
 
 
-// set current node isFinish to true
-const MoveFinish = (matrix, row, col) => {
-  var newMatrix = matrix;
-  newMatrix[row][col].isFinish = true;
+
+const MatrixDynamicNodes = (matrix, row, col, pos) => {
+  console.log(`start node is currently at: row: ${row} col: ${col}`);
+  let newMatrix = matrix.slice();
+  const node = newMatrix[row][col];
+  if (pos === "start") {
+      const newNode = {
+          ...node,
+          isStart: true
+      }
+      newMatrix[row][col] = newNode;
+  }
+  if (pos === "finish") {
+      const newNode = {
+          ...node,
+          isFinish: true
+      }
+      newMatrix[row][col] = newNode;
+  }
   return newMatrix;
 }
-
-
-// set current node isStart to true
-const MoveStart = (matrix, row, col) => {
-  var newMatrix = matrix;
-  newMatrix[row][col].isStart = true;
-  return newMatrix;
-};
-
 
 // Toggled and untoggle isWall to the current node
-const getNewMatrixWithWallToggled = (matrix, row, col) => {
-  const newMatrix = matrix;
-
+const MatrixWithWallToggled = (matrix, row, col) => {
+  let newMatrix = matrix.slice();
   const node = newMatrix[row][col];
-
-  if(newMatrix[row][col].isStart === false && newMatrix[row][col].isFinish === false){
   const newNode = {
-    ...node,
-    isWall: !node.isWall,
-  };
+      ...node,
+      isWall: !node.isWall
+  }
   newMatrix[row][col] = newNode;
-}
   return newMatrix;
-};
+}
 
 
 
