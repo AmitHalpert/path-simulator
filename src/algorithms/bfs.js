@@ -53,7 +53,7 @@ export function bfs(matrix, startNode, finishNode) {
     }
 }
 
-export function getShortestPathOrderBFS(finishNode) {
+export function getShortestPathBFS(finishNode) {
   const nodesInShortestPathOrder = [];
   let currentNode = finishNode;
   while (currentNode !== null) {

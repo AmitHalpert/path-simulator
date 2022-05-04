@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
 import {dijkstra, getShortestPathOrderDijkstra} from '../algorithms/dijkstra';
-import {bfs, getShortestPathOrderBFS} from '../algorithms/bfs';
+import {bfs, getShortestPathBFS} from '../algorithms/bfs';
+import {dfs, getShortestPathDFS} from '../algorithms/dfs';
 
 import './PathSimulator.css';
 
@@ -127,11 +128,28 @@ export default class PathSimulator extends Component {
   // algorithms animations
   /////////////////
 
-  animateBfs(visitedNodesInOrder, getShortestPathOrderBFS){
+
+  animateDFS(visitedNodesInOrder, getShortestPathDFS){
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
-          this.animateShortestPath(getShortestPathOrderBFS);
+          this.animateShortestPath(getShortestPathDFS);
+        }, 10 * i);
+        return;
+      }
+      setTimeout(() => {
+        const node = visitedNodesInOrder[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className =
+          'node node-visited';
+      }, 10 * i);
+    }
+  }
+
+  animateBFS(visitedNodesInOrder, getShortestPathBFS){
+    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+      if (i === visitedNodesInOrder.length) {
+        setTimeout(() => {
+          this.animateShortestPath(getShortestPathBFS);
         }, 10 * i);
         return;
       }
@@ -159,14 +177,23 @@ export default class PathSimulator extends Component {
     }
   }
 
+  visualizeDFS() {
+    const {matrix} = this.state;
+    const startNode = matrix[START_NODE_ROW][START_NODE_COL];
+    const finishNode = matrix[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const visitedNodesInOrder = dfs(matrix, startNode, finishNode);
+    const nodesInShortestPathOrder = getShortestPathDFS(finishNode);
+    this.animateDFS(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
 
-  visualizeBfs() {
+
+  visualizeBFS() {
     const {matrix} = this.state;
     const startNode = matrix[START_NODE_ROW][START_NODE_COL];
     const finishNode = matrix[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = bfs(matrix, startNode, finishNode);
-    const nodesInShortestPathOrderB = getShortestPathOrderBFS(finishNode);
-    this.animateBfs(visitedNodesInOrder, nodesInShortestPathOrderB);
+    const nodesInShortestPathOrder = getShortestPathBFS(finishNode);
+    this.animateBFS(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
   visualizeDijkstra() {
@@ -206,8 +233,11 @@ export default class PathSimulator extends Component {
      <button onClick={() => this.visualizeDijkstra()} class="button-68" >
        Visualize Dijkstra's Algorithm
      </button>
-     <button onClick={() => this.visualizeBfs()} class="button-68" >
+     <button onClick={() => this.visualizeBFS()} class="button-68" >
        Visualize BFS Algorithm
+     </button>
+     <button onClick={() => this.visualizeDFS()} class="button-68" >
+       Visualize DFS Algorithm
      </button>
         <div className="matrix">
           {matrix.map((row, rowIdx) => {
