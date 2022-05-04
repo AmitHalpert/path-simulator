@@ -1,4 +1,3 @@
-
 export function bfs(matrix, startNode, finishNode) {
     const visitedNodesInOrder = [];
     // queue to keep track of the visited nodes
@@ -21,7 +20,7 @@ export function bfs(matrix, startNode, finishNode) {
   }
 
 
-  // updates the neighbours,
+  // updates and gets the neighbours,
   function updateUnvisitedNeighbours(row,col,queue,matrix,currentNode) {
     let next;
     if (row > 0) {

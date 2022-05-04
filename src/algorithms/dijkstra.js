@@ -1,4 +1,3 @@
-
 export function dijkstra(matrix, startNode, finishNode) {
   const visitedNodesInOrder = [];
   startNode.distance = 0;
@@ -20,22 +19,21 @@ export function dijkstra(matrix, startNode, finishNode) {
 
 
 // sort the the Nodes to get the the first node
-// Could be better if using minimal heap.
+// Could be better if using min heap.
 function sortNodesByDistance(unvisitedNodes) {
   unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
 }
 
 
 function updateUnvisitedNeighbors(node, matrix) {
-  const unvisitedNeighbors = getUnvisitedNeighbors(node, matrix);
+  const unvisitedNeighbors = getUnvisitedNeighbours(node, matrix);
   for (const neighbor of unvisitedNeighbors) {
     neighbor.distance = node.distance + 1;
     neighbor.previousNode = node;
   }
 }
 
-
-function getUnvisitedNeighbors(node, matrix) {
+function getUnvisitedNeighbours(node, matrix) {
   const neighbors = [];
   const {col, row} = node;
   if (row > 0) neighbors.push(matrix[row - 1][col]);
@@ -56,7 +54,6 @@ function getAllTheNodes(matrix) {
 }
 
 // Backtracks from the finishNode to find the shortest path.
-// Only works when called *after* the dijkstra method above.
 export function getShortestPathOrderDijkstra(finishNode) {
   const nodesInShortestPathOrder = [];
   let currentNode = finishNode;
