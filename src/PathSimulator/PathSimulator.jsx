@@ -16,17 +16,15 @@ const FINISH_NODE_ROW = 10;
 const FINISH_NODE_COL = 35;
 
 export default class PathSimulator extends Component {
-  constructor() {
-    super();
-    this.state = {
+  state = {
       matrix: [],
       mouseIsPressed: false,
       mainIsPressed: "",
       isVisualizing: false,
       startNode_Pos: [START_NODE_ROW, START_NODE_COL],
       finishNode_Pos: [FINISH_NODE_ROW, FINISH_NODE_COL],
-    };
   }
+  
 
   componentDidMount() {
     const { startNode_Pos, finishNode_Pos } = this.state;
@@ -51,7 +49,7 @@ export default class PathSimulator extends Component {
       this.setState({ mainIsPressed: "finish" });
       node.isFinish = false;
     }
-    if (mainIsPressed === "") {
+    if (mainIsPressed === "" && node.isFinish === false && node.isStart === false) {
       const newMatrix = MatrixWithWallToggled(matrix, row, col);
       this.setState({ matrix: newMatrix, mouseIsPressed: true });
     }
@@ -64,20 +62,39 @@ export default class PathSimulator extends Component {
 
     if (mainIsPressed === "start") {
       const newMatrix = MatrixDynamicNodes(matrix, row, col, "start");
-      this.setState({ matrix: newMatrix})
+      this.setState({ matrix: newMatrix});
     }
 
   
     if(mainIsPressed === "finish") {
-      const newGrid = MatrixDynamicNodes(matrix, row, col, "finish");
-      this.setState({ grid: newGrid });
+      const newMatrix = MatrixDynamicNodes(matrix, row, col, "finish");
+      this.setState({ matrix: newMatrix });
     }
-
-   if (mouseIsPressed && mainIsPressed === "") {
+    
+  if(mainIsPressed !== "finish" && mainIsPressed !== "start"){
+   if (mouseIsPressed && mainIsPressed === "" && mainIsPressed !== "start") {
       const newMatrix = MatrixWithWallToggled(matrix, row, col);
       this.setState({ matrix: newMatrix, mouseIsPressed: true });
     }
+   }
   }
+
+
+  handleMouseUp(row, col) {
+    const { mainIsPressed, matrix } = this.state;
+    if (mainIsPressed === "start") {
+        this.setState({ mainIsPressed: "" });
+        const startNode_Pos = [row, col];
+        const newMatrix = MatrixDynamicNodes(matrix, row, col, "start");
+        this.setState({ mainIsPressed: "", startNode_Pos, matrix: newMatrix });
+    }
+    if (mainIsPressed === "finish") {
+        const finishNode_Pos = [row, col];
+        const newMatrix = MatrixDynamicNodes(matrix, row, col, "finish");
+        this.setState({ mainIsPressed: "", finishNode_Pos, matrix: newMatrix });
+    }
+    this.setState({ mouseIsPressed: false });
+}
   
 
   // user not clicking
@@ -203,9 +220,14 @@ export default class PathSimulator extends Component {
   }
 
   visualizeDFS() {
-    const {matrix} = this.state;
-    const startNode = matrix[START_NODE_ROW][START_NODE_COL];
-    const finishNode = matrix[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const {matrix, startNode_Pos, finishNode_Pos} = this.state;
+    // get the startX and startY
+    const start_X = startNode_Pos[0], start_Y = startNode_Pos[1];
+    const startNode = matrix[start_X][start_Y];
+    // get the finishX and finishY
+    const finish_X = finishNode_Pos[0], finish_Y = finishNode_Pos[1];
+    const finishNode = matrix[finish_X][finish_Y];
+
     const visitedNodesInOrder = dfs(matrix, startNode, finishNode);
     const nodesInShortestPathOrder = getShortestPathDFS(finishNode);
     this.animateDFS(visitedNodesInOrder, nodesInShortestPathOrder);
@@ -213,18 +235,22 @@ export default class PathSimulator extends Component {
 
 
   visualizeBFS() {
-    const {matrix} = this.state;
-    const startNode = matrix[START_NODE_ROW][START_NODE_COL];
-    const finishNode = matrix[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const {matrix, startNode_Pos, finishNode_Pos} = this.state;
+    const start_X = startNode_Pos[0], start_Y = startNode_Pos[1];
+    const startNode = matrix[start_X][start_Y];
+    const finish_X = finishNode_Pos[0], finish_Y = finishNode_Pos[1];
+    const finishNode = matrix[finish_X][finish_Y];
     const visitedNodesInOrder = bfs(matrix, startNode, finishNode);
     const nodesInShortestPathOrder = getShortestPathBFS(finishNode);
     this.animateBFS(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
   visualizeDijkstra() {
-    const {matrix} = this.state;
-    const startNode = matrix[START_NODE_ROW][START_NODE_COL];
-    const finishNode = matrix[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const {matrix, startNode_Pos, finishNode_Pos} = this.state;
+    const start_X = startNode_Pos[0], start_Y = startNode_Pos[1];
+    const startNode = matrix[start_X][start_Y];
+    const finish_X = finishNode_Pos[0], finish_Y = finishNode_Pos[1];
+    const finishNode = matrix[finish_X][finish_Y];
     const visitedNodesInOrder = dijkstra(matrix, startNode, finishNode);
     const nodesInShortestPathOrder = getShortestDijkstra(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
@@ -281,8 +307,9 @@ export default class PathSimulator extends Component {
                       mouseIsPressed={mouseIsPressed}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                       onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
-                      onMouseUp={() => this.handleMouseUp(row, col)}
-                      ></Node>
+                      onMouseUp={(row, col) => this.handleMouseUp(row, col)}
+                      onMouseLeave={(row, col) => this.handleMouseLeave(row, col)}
+                      />
                   );
                 })}
               </div>
@@ -292,7 +319,7 @@ export default class PathSimulator extends Component {
       </>
     );
   }
-} // end of the PathSimulator Component
+} // end of the PathSimulator
 
 
 /////////////////
@@ -304,7 +331,7 @@ const getInitialMatrix = (startNode_Pos, finishNode_Pos) => {
   for (let row = 0; row < NUMBER_ROW; row++) {
     const currentRow = [];
     for (let col = 0; col < NUMBER_COL; col++) {
-      currentRow.push(createNode(col,row,startNode_Pos, finishNode_Pos));
+      currentRow.push(createNode(row,col,startNode_Pos, finishNode_Pos));
     }
     matrix.push(currentRow);
   }
@@ -312,7 +339,7 @@ const getInitialMatrix = (startNode_Pos, finishNode_Pos) => {
 };
 
 
-const createNode = (col, row, startNode, finishNode) => {
+const createNode = (row, col, startNode, finishNode) => {
 
   let start_x = startNode[0];
   let start_y = startNode[1];
@@ -356,12 +383,15 @@ const MatrixDynamicNodes = (matrix, row, col, pos) => {
 
 // Toggled and untoggle isWall to the current node
 const MatrixWithWallToggled = (matrix, row, col) => {
+
   let newMatrix = matrix.slice();
   const node = newMatrix[row][col];
+  
   const newNode = {
       ...node,
       isWall: !node.isWall
-  }
+  };
+
   newMatrix[row][col] = newNode;
   return newMatrix;
 }

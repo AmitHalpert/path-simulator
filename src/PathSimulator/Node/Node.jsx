@@ -2,33 +2,21 @@ import React, {Component} from 'react';
 
 import './Node.css';
 
-export default class Node extends Component {
-  render() {
-    const {
-      isStart,
-      col,
-      row,
-      isFinish,
-      isWall,
-      onMouseDown,
-      onMouseEnter,
-      onMouseUp,
-    } = this.props;
-    const extraClassName = isFinish
-      ? 'node-finish'
-      : isStart
-      ? 'node-start'
-      : isWall
-      ? 'node-wall'
-      : '';
+const Node = (props) => {
+  const { row, col, isStart, isFinish, isWall, onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = props;
+  const extraClassName = isStart ? 'node-start' : isFinish ? 'node-finish' : isWall ? 'node-wall' : '' ; 
 
-    return (
+  return ( 
       <div
-        id={`node-${row}-${col}`}
-        className={`node ${extraClassName}`}
-        onMouseDown={() => onMouseDown(row, col)}
-        onMouseEnter={() => onMouseEnter(row, col)}
-        onMouseUp={() => onMouseUp(row, col)}></div>
-    );
-  }
+          id={`node-${row}-${col}`}
+          className={`node ${extraClassName}`}
+          onMouseDown={() => onMouseDown(row, col)}
+          onMouseEnter={() => onMouseEnter(row, col)}
+          onMouseUp={() => onMouseUp(row,col)}
+          onMouseLeave={() => onMouseLeave(row, col)}
+      >
+      </div>
+   );
 }
+
+export default Node;
