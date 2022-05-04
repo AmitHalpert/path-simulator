@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
-import {dijkstra, getShortestPathOrderDijkstra} from '../algorithms/dijkstra';
+import {dijkstra, getShortestDijkstra} from '../algorithms/dijkstra';
 import {bfs, getShortestPathBFS} from '../algorithms/bfs';
 import {dfs, getShortestPathDFS} from '../algorithms/dfs';
-
 import './PathSimulator.css';
 
 var IsStartSelected = false;
 var isFinishSelected = false;
 
-const NUMBER_ROW = 27;
-const NUMBER_COL = 60;
+const NUMBER_ROW = 26;
+const NUMBER_COL = 50;
 
 var START_NODE_ROW = 10;
 var START_NODE_COL = 15;
@@ -32,7 +31,7 @@ export default class PathSimulator extends Component {
   }
   
   /////////////////
-  // USER INPUT
+  // user input handling
   /////////////////
 
   // user clicking a node
@@ -83,7 +82,7 @@ export default class PathSimulator extends Component {
 
 
   /////////////////
-  // CLEAR
+  // clear functions
   /////////////////
 
 
@@ -161,11 +160,11 @@ export default class PathSimulator extends Component {
     }
   }
 
-  animateDijkstra(visitedNodesInOrder, getShortestPathOrderDijkstra) {
+  animateDijkstra(visitedNodesInOrder, getShortestDijkstra) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
-          this.animateShortestPath(getShortestPathOrderDijkstra);
+          this.animateShortestPath(getShortestDijkstra);
         }, 10 * i);
         return;
       }
@@ -201,7 +200,7 @@ export default class PathSimulator extends Component {
     const startNode = matrix[START_NODE_ROW][START_NODE_COL];
     const finishNode = matrix[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(matrix, startNode, finishNode);
-    const nodesInShortestPathOrder = getShortestPathOrderDijkstra(finishNode);
+    const nodesInShortestPathOrder = getShortestDijkstra(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
@@ -271,7 +270,7 @@ export default class PathSimulator extends Component {
 
 
 /////////////////
-// MATRIX 
+// matrix 
 /////////////////
 
 const getInitialMatrix = () => {

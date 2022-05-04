@@ -54,7 +54,7 @@ function getAllTheNodes(matrix) {
 }
 
 // Backtracks from the finishNode to find the shortest path.
-export function getShortestPathOrderDijkstra(finishNode) {
+export function getShortestDijkstra(finishNode) {
   const nodesInShortestPathOrder = [];
   let currentNode = finishNode;
   while (currentNode !== null) {

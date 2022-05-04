@@ -2,16 +2,17 @@
   width: 31px;
   height: 31px;
   outline: 0.5px solid #ffffff36;
+  margin: 0.5px ;
   display: inline-block;
   vertical-align:middle;
 }
 
 .node-finish {
-  background-color: #fc3d43;
+  background-color: #e01d1dc4;
 }
 
 .node-start {
-  background-color: #fac431
+  background-color: rgb(14, 143, 68);
   
 }
 
@@ -34,24 +35,25 @@
   }
 
   50% {
-    background-color: #F8333C
+    background-color: rgba(17, 104, 217, 0.75);
   }
 
   75% {
     transform: scale(1.2);
-    background-color: #FCAB10
+    background-color: rgba(0, 217, 159, 0.75);
   }
 
   100% {
     transform: scale(1);
-    background-color: #44AF69;
-    
+    background-color: rgba(0, 190, 218, 0.75);
   }
 }
 
 .node-wall {
-  background-color: #2275c9e8;
+  background-color: #fcba03;
 }
+
+
 
 .node-shortest-path {
   animation-name: shortestPath;
@@ -67,16 +69,16 @@
 @keyframes shortestPath {
   0% {
     transform: scale(0.6);
-    background-color: rgb(255, 254, 106);
+    background-color: #cf2541;
   }
 
   50% {
     transform: scale(1.2);
-    background-color: rgb(255, 254, 106);
+    background-color: #cf2541;
   }
 
   100% {
     transform: scale(1);
-    background-color: rgb(255, 254, 106);
+    background-color: #cf2541;
   }
 }
