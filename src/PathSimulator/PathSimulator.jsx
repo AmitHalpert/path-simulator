@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+
+
+
 import Node from './Node/Node';
 import {dijkstra, getShortestDijkstra} from '../algorithms/dijkstra';
 import {bfs, getShortestPathBFS} from '../algorithms/bfs';
@@ -145,6 +148,7 @@ export default class PathSimulator extends Component {
 }
 
 
+
   /////////////////
   // algorithms animations
   /////////////////
@@ -198,6 +202,8 @@ export default class PathSimulator extends Component {
     }
   }
 
+
+
   visualizeDFS() {
     const {matrix, startNode_Pos, finishNode_Pos} = this.state;
     // get the startX and startY
@@ -211,7 +217,6 @@ export default class PathSimulator extends Component {
     const nodesInShortestPathOrder = getShortestPathDFS(finishNode);
     this.animateDFS(visitedNodesInOrder, nodesInShortestPathOrder);
   }
-
 
   visualizeBFS() {
     const {matrix, startNode_Pos, finishNode_Pos} = this.state;
@@ -254,18 +259,18 @@ export default class PathSimulator extends Component {
 
     return (
       <>
-    <button onClick={() => this.clearMatrix()} class="button-68" >
-    CLEAR ALL
-    </button>
      <button onClick={() => this.visualizeDijkstra()} class="button-68" >
-       Visualize Dijkstra's Algorithm
+       DIJKSTRA
      </button>
      <button onClick={() => this.visualizeBFS()} class="button-68" >
-       Visualize BFS Algorithm
+       BFS
      </button>
      <button onClick={() => this.visualizeDFS()} class="button-68" >
-       Visualize DFS Algorithm
+       DFS
      </button>
+     <button onClick={() => this.clearMatrix()} class="button-68" >
+    CLEAR
+    </button>
         <div className="matrix">
           {matrix.map((row, rowIdx) => {
             return (
@@ -356,6 +361,8 @@ const MatrixDynamicNodes = (matrix, row, col, pos) => {
   }
   return newMatrix;
 }
+
+
 
 // Toggled and untoggle isWall to the current node
 const MatrixWithWallToggled = (matrix, row, col) => {
