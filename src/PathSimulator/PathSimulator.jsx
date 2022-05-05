@@ -129,41 +129,20 @@ export default class PathSimulator extends Component {
   /////////////////
 
 
-  clearStart(row, col) {
-    const {matrix} = this.state;
-    for (let r = 0; r < NUMBER_ROW; r++) {
-      for (let c = 0; c < NUMBER_COL; c++) {
-        matrix[r][c].isStart = false;
-      }
+  clearMatrix = () => {
+    const { startNode_Pos, finishNode_Pos } = this.state;
+    const start_X = startNode_Pos[0], start_Y = startNode_Pos[1];
+    const finish_X = finishNode_Pos[0], finish_Y = finishNode_Pos[1];
+    for (let row = 0; row < this.state.matrix.length; row++) {
+        for (let col = 0; col < this.state.matrix[0].length; col++) {
+            if (!((row === start_X && col === start_Y) || (row === finish_X && col === finish_Y))) {
+                document.getElementById(`node-${row}-${col}`).className = "node";
+            }
+        }
     }
-  }
-
-  clearFinish(row, col) {
-    const {matrix} = this.state;
-    for (let r = 0; r < NUMBER_ROW; r++) {
-      for (let c = 0; c < NUMBER_COL; c++) {
-        matrix[r][c].isFinish = false;
-      }
-    }
-  }
-
-
-  // clear all the nodes that are isWall
-   clearWalls(){
-    const {matrix} = this.state;
-    for (let r = 0; r < NUMBER_ROW; r++) {
-      for (let c = 0; c < NUMBER_COL; c++) {
-        matrix[r][c].isWall = false;
-      }
-    }
-    // fource react to re-render.
-    this.forceUpdate()
-  }
-
-    // best workaround
-    resetMatrix(){
-      window.location.reload(false);
-    }
+    const newMatrix = getInitialMatrix(startNode_Pos,finishNode_Pos);
+    this.setState({ matrix: newMatrix});
+}
 
 
   /////////////////
@@ -275,11 +254,8 @@ export default class PathSimulator extends Component {
 
     return (
       <>
-    <button onClick={() => this.resetMatrix()} class="button-68" >
-    reset matrix
-     </button>
-    <button onClick={() => this.clearWalls()} class="button-68" >
-    clear walls
+    <button onClick={() => this.clearMatrix()} class="button-68" >
+    CLEAR ALL
     </button>
      <button onClick={() => this.visualizeDijkstra()} class="button-68" >
        Visualize Dijkstra's Algorithm
