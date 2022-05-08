@@ -1,7 +1,6 @@
+
+// import components
 import React, {Component} from 'react';
-
-
-
 import Node from './Node/Node';
 import {dijkstra, getShortestDijkstra} from '../algorithms/dijkstra';
 import {bfs, getShortestPathBFS} from '../algorithms/bfs';
@@ -9,7 +8,7 @@ import {dfs, getShortestPathDFS} from '../algorithms/dfs';
 import './PathSimulator.css';
 
 
-
+// constants
 const NUMBER_ROW = 26;
 const NUMBER_COL = 50;
 
