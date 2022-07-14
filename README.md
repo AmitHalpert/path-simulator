@@ -20,6 +20,3 @@ yarn start
 ```
 
 
-## LICENSE
-
-[MIT]('./LICENSE.md')
