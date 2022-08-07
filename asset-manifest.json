@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/path-simulator/static/css/main.f6f0b7dc.css",
+    "main.js": "/path-simulator/static/js/main.90dd445a.js",
+    "index.html": "/path-simulator/index.html",
+    "main.f6f0b7dc.css.map": "/path-simulator/static/css/main.f6f0b7dc.css.map",
+    "main.90dd445a.js.map": "/path-simulator/static/js/main.90dd445a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f6f0b7dc.css",
+    "static/js/main.90dd445a.js"
+  ]
+}
