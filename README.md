@@ -7,7 +7,8 @@
 
 * Dijkstra
 * DFS
-* 0-1 BFS
+* BFS
+* A*
 
 <br>
 
