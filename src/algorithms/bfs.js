@@ -1,64 +1,54 @@
-export function bfs(matrix, startNode, finishNode) {
-    const visitedNodesInOrder = [];
-    // queue to keep track of the visited nodes
-    let queue = [];
-    queue.push(startNode);
-
-    while (queue.length) {
-      const currentNode = queue.shift();
-
-      if (currentNode === finishNode) return visitedNodesInOrder;
-  
-      if (!currentNode.isWall && (currentNode.isStart || !currentNode.isVisited)){
-          currentNode.isVisited = true;
-          visitedNodesInOrder.push(currentNode);
-          const {row , col} = currentNode;
-          updateUnvisitedNeighbours(row, col, queue, matrix, currentNode)
-      }
-
+export function bfs(grid, startNode, finishNode) {
+  const visitedNodesInOrder = [];
+  // queue to keep track of the visited nodes
+  let queue = [];
+  queue.push(startNode);
+  while (queue.length) {
+    const currNode = queue.shift();
+    // if the finsih node is reached then we return the visitedNodes array
+    if (currNode === finishNode)
+      return visitedNodesInOrder;
+    
+    // we skip the nodes which are walls, start node or finish node
+    if (!currNode.isWall && (currNode.isStart || !currNode.isVisited)) {
+      currNode.isVisited = true;
+      visitedNodesInOrder.push(currNode);
+      const { row, col } = currNode;
+      updateUnvisitedNeighbours(row, col, queue, grid,currNode);
     }
   }
-
-
-  // updates and gets the neighbours,
-  function updateUnvisitedNeighbours(row,col,queue,matrix,currentNode) {
-    let next;
-    if (row > 0) {
-      next = matrix[row - 1][col];
-      if (!next.isVisited) {
-        queue.push(next);
-        next.previousNode = currentNode;
-      }
-    }
-    if (row < matrix.length - 1) {
-      next = matrix[row + 1][col];
-      if (!next.isVisited) {
-        queue.push(next);
-        next.previousNode = currentNode;
-      }
-    }
-    if (col > 0) {
-      next = matrix[row][col - 1];
-      if (!next.isVisited) {
-        queue.push(next);
-        next.previousNode = currentNode;
-      }
-    }
-    if (col < matrix[0].length - 1) {
-      next = matrix[row][col + 1];
-      if (!next.isVisited) {
-        queue.push(next);
-        next.previousNode = currentNode;
-      }
-    }
 }
 
-export function getShortestPathBFS(finishNode) {
-  const nodesInShortestPathOrder = [];
-  let currentNode = finishNode;
-  while (currentNode !== null) {
-    nodesInShortestPathOrder.unshift(currentNode);
-    currentNode = currentNode.previousNode;
-  }
-  return nodesInShortestPathOrder;
+// updates the neighbours,
+// in correspondance to the algorithm 
+function updateUnvisitedNeighbours(row,col,queue,grid,currNode) {
+      let next;
+      if (row > 0) {
+        next = grid[row - 1][col];
+        if (!next.isVisited) {
+          queue.push(next);
+          next.previousNode = currNode;
+        }
+      }
+      if (row < grid.length - 1) {
+        next = grid[row + 1][col];
+        if (!next.isVisited) {
+          queue.push(next);
+          next.previousNode = currNode;
+        }
+      }
+      if (col > 0) {
+        next = grid[row][col - 1];
+        if (!next.isVisited) {
+          queue.push(next);
+          next.previousNode = currNode;
+        }
+      }
+      if (col < grid[0].length - 1) {
+        next = grid[row][col + 1];
+        if (!next.isVisited) {
+          queue.push(next);
+          next.previousNode = currNode;
+        }
+      }
 }

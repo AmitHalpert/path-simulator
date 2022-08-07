@@ -1,65 +1,36 @@
-export function dijkstra(matrix, startNode, finishNode) {
+import { getAllNodes, sortNodesByDistance, getUnvisitedNeighbours } from "./index";
+
+export function dijkstra(grid, startNode, finishNode) {
   const visitedNodesInOrder = [];
   startNode.distance = 0;
-  const unvisitedNodes = getAllTheNodes(matrix);
+  const unvisitedNodes = getAllNodes(grid);
   while (!!unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes);
     const closestNode = unvisitedNodes.shift();
-
-    // If node is wall, skip it.
-    if (closestNode.isWall) continue;
-
-    if (closestNode.distance === Infinity) return visitedNodesInOrder;
+    // If we encounter a wall, we skip it.
+    if (closestNode.isWall)
+      continue;
+    
+    // If the closest node is at a distance of infinity,
+    // we must be trapped and should therefore stop.
+    if (closestNode.distance === Infinity)
+      return visitedNodesInOrder;
+    
     closestNode.isVisited = true;
     visitedNodesInOrder.push(closestNode);
-    if (closestNode === finishNode) return visitedNodesInOrder;
-    updateUnvisitedNeighbors(closestNode, matrix);
+    if (closestNode === finishNode)
+      return visitedNodesInOrder;
+    
+    updateUnvisitedNeighbours(closestNode, grid);
   }
 }
 
-
-// sort the the Nodes to get the the first node
-// Could be better if using min heap.
-function sortNodesByDistance(unvisitedNodes) {
-  unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-}
-
-
-function updateUnvisitedNeighbors(node, matrix) {
-  const unvisitedNeighbors = getUnvisitedNeighbours(node, matrix);
+// updates the neighbours,
+// in correspondance to the algorithm 
+function updateUnvisitedNeighbours(node, grid) {
+  const unvisitedNeighbors = getUnvisitedNeighbours(node, grid);
   for (const neighbor of unvisitedNeighbors) {
     neighbor.distance = node.distance + 1;
     neighbor.previousNode = node;
   }
-}
-
-function getUnvisitedNeighbours(node, matrix) {
-  const neighbors = [];
-  const {col, row} = node;
-  if (row > 0) neighbors.push(matrix[row - 1][col]);
-  if (row < matrix.length - 1) neighbors.push(matrix[row + 1][col]);
-  if (col > 0) neighbors.push(matrix[row][col - 1]);
-  if (col < matrix[0].length - 1) neighbors.push(matrix[row][col + 1]);
-  return neighbors.filter(neighbor => !neighbor.isVisited);
-}
-
-function getAllTheNodes(matrix) {
-  const nodes = [];
-  for (const row of matrix) {
-    for (const node of row) {
-      nodes.push(node);
-    }
-  }
-  return nodes;
-}
-
-// Backtracks from the finishNode to find the shortest path.
-export function getShortestDijkstra(finishNode) {
-  const nodesInShortestPathOrder = [];
-  let currentNode = finishNode;
-  while (currentNode !== null) {
-    nodesInShortestPathOrder.unshift(currentNode);
-    currentNode = currentNode.previousNode;
-  }
-  return nodesInShortestPathOrder;
 }

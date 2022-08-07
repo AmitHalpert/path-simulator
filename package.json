@@ -1,5 +1,5 @@
 {
-  "name": "path-visualizer",
+  "name": "path-simulator",
   "version": "0.1.0",
   "private": true,
   "homepage": "https://amithalpert.github.io/path-simulator",
@@ -12,6 +12,7 @@
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.0",
     "reactstrap": "^9.0.2",
+    "sass": "^1.54.3",
     "web-vitals": "^2.1.0"
   },
   "scripts": {

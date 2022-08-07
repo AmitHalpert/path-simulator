@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import PathSimulator from './PathSimulator/PathSimulator';
+import PathSimulator from './components/PathSimulator/PathSimulator.jsx'
 
 function App() {
   return (

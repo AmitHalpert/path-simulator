@@ -66,6 +66,44 @@
   animation-play-state: running;
 }
 
+.node-animated-wall {
+    animation-name: wallAnimation;
+    animation-duration: 0.25s;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+@keyframes wallAnimation {
+  0% {
+    transform: scale(0.4);
+    background-color: rgb(116, 112, 2);
+    
+  }
+
+  50% {
+    transform: scale(0.6);
+    background-color: rgb(99, 100, 0);
+
+  }
+
+  75% {
+    transform: scale(0.8);
+    background-color: rgb(126, 124, 0);
+
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: #fcba03;
+
+  }
+}
+
+
 @keyframes shortestPath {
   0% {
     transform: scale(0.6);
