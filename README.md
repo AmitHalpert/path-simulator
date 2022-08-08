@@ -34,4 +34,4 @@ yarn start
 
 ## LICENSE
 
-[MIT]('./LICENSE.md')
+[MIT](LICENSE)
