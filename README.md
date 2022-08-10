@@ -8,7 +8,7 @@
 
 
 
-<img src="./visualizer.gif">
+<img src="./path.gif">
 
 
 
