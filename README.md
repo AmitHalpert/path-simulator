@@ -2,7 +2,7 @@
 
 
 
-**path-simulator** is webapp for visualizing the pathfinding algorithms. <br>
+**path-simulator** is webapp for visualizing the pathfinding algorithms in real-time. <br>
 
 ### [LIVE DEMO](https://amithalpert.github.io/path-simulator/)
 
